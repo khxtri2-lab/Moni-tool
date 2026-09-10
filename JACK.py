@@ -4,6 +4,7 @@
 """
 𝐀ɴɪsʜ — 𝐏ʀᴏꜰᴇssɪᴏɴᴀʟ 𝐇ɪᴛᴛᴇʀ (𝐏ʀᴇᴍɪᴜᴍ 𝐄ᴅɪᴛɪᴏɴ)
 - 𝐈ɴꜰᴇʀɴᴏ 𝐔𝐈
+- 𝐏ᴇʀᴍᴀɴᴇɴᴛ 𝐄ᴅɪᴛɪᴏɴ (𝐍ᴏ 𝐄xᴘɪʀʏ)
 - 𝐂ʜᴀɴɴᴇʟ: @ANISHPY | 𝐃ᴇᴠ: @SUNRAKUV2
 """
 
@@ -61,18 +62,12 @@ def anish_mixed(text):
 A = anish  # short alias
 
 # ============================================================
-# ⚙️ 𝐂ᴏɴꜰɪɢ
+# ⚙️ 𝐂ᴏɴꜰɪɢ — 𝐏ᴇʀᴍᴀɴᴇɴᴛ 𝐄ᴅɪᴛɪᴏɴ
 # ============================================================
-MIN_FOLLOWERS = 20
-expiry_date = datetime(2027, 9, 14, 16, 23, 23)
-current_date = datetime.now()
+MIN_FOLLOWERS = 10     # 👈 10 kar diya
+THREADS = 100          # 👈 100 kar diya
 
-if current_date > expiry_date:
-    print(f"\n✖ {A('Your Time Has Expired')}!")
-    print(A("Contact @SUNRAKUV2 for extension."))
-    sys.exit()
-
-THREADS = 80
+# No expiry — permanent edition (timer hata diya)
 
 # ============================================================
 # 🎨 𝐈ɴꜰᴇʀɴᴏ 𝐂ᴏʟᴏʀs
@@ -608,7 +603,6 @@ class ReportManager:
         reset_mask = self._fetch_reset_email(username)
         monetization = self._get_monetization_status(data)
 
-        # 🔥 𝐀ɴɪsʜ 𝐒ᴛʏʟᴇ 𝐎ᴜᴛᴘᴜᴛ
         lines = [
             f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
             f"  ✨ {A('ANISHPY')} ✦ {A('HIT FOUND')} ✨",
@@ -632,7 +626,6 @@ class ReportManager:
             f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
         ]
 
-        # Console output (with colors)
         colored_lines = []
         for line in lines:
             if ':' in line and not line.startswith('━') and not line.startswith('  ✨') and not line.startswith('     🚀') and not line.startswith('  📢'):
@@ -651,7 +644,6 @@ class ReportManager:
                     colored_lines.append(f"{WHITE}{line}{RESET}")
         console_msg = '\n'.join(colored_lines)
 
-        # Telegram HTML output
         html_lines = []
         for line in lines:
             if ':' in line and not line.startswith('━') and not line.startswith('  ✨') and not line.startswith('     🚀') and not line.startswith('  📢'):
@@ -698,48 +690,40 @@ class ReportManager:
 
 def main():
     global hits, good, bad, bot_token, chat_id
-    
+
     show_banner()
     animated_loader("Initializing Core Modules", 1.5)
-    
+
     print(f"{INFERNO_ORANGE}{B}{A('Enter your Chat ID')}:{RESET}")
     chat_id = input(f"{INFERNO_ORANGE}╰─➤ {RESET}").strip()
     animated_loader("Verifying Chat ID", 1.0)
-    
+
     print(f"{INFERNO_ORANGE}{B}{A('Enter your Bot Token')}:{RESET}")
     bot_token = input(f"{INFERNO_ORANGE}╰─➤ {RESET}").strip()
     animated_loader("Authenticating Bot", 1.0)
-    
+
     _ui_clear()
     show_banner()
-    
-    global expire_time
-    start_time = time.time()
-    time_until_expiry = (expiry_date - current_date).total_seconds()
-    expire_time = start_time + time_until_expiry
-    expire_datetime = expiry_date.strftime('%Y-%m-%d %H:%M:%S')
-    
+
     print(f"\n{INFERNO_RED}{B}{A('Minimum Followers')}: {W}{MIN_FOLLOWERS}")
     print(f"{INFERNO_RED}{B}{A('Threads')}: {W}{THREADS}")
-    print(f"{INFERNO_RED}{B}{A('Auto-stop')}: {W}{expire_datetime}\n")
-    
+    print(f"{INFERNO_RED}{B}{A('Mode')}: {W}{A('PERMANENT')}\n")
+
     animated_loader("Starting Scanner Engine", 1.5)
-    
+
     hits = 0
     good = 0
     bad = 0
     display(0, 0, 0)
-    
+
     reporter = ReportManager(bot_token, chat_id)
     google = GoogleChecker()
     insta = InstagramChecker()
-    
+
     def process_user():
         global hits, good, bad
         while True:
-            if time.time() > expire_time:
-                print(f"\n{WHITE}{A('Time expired. Stopping workers.')}{RESET}")
-                sys.exit(0)
+            # No expiry — runs forever
 
             try:
                 user_id = random.randint(2500000000, 21254029834)
@@ -782,7 +766,7 @@ def main():
                         print('\n' + GOLD + '═' * 60 + RESET)
                         print(console_msg)
                         print(GOLD + '═' * 60 + RESET)
-                        
+
                         plain_msg = re.sub(r'<[^>]+>', '', telegram_msg)
                         reporter.save_to_file(plain_msg)
                         reporter.send_telegram(telegram_msg)
@@ -795,7 +779,7 @@ def main():
             except Exception:
                 time.sleep(random.uniform(0.1, 0.2))
                 continue
-    
+
     with ThreadPoolExecutor(max_workers=THREADS) as executor:
         for _ in range(THREADS):
             executor.submit(process_user)
